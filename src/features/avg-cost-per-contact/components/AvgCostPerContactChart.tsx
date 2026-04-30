@@ -1,0 +1,60 @@
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { useAvgCostPerContact } from '../hooks/useAvgCostPerContact'
+
+interface Props {
+  fromTimestamp: string
+  toTimestamp: string
+  environment: string
+  traceName?: string
+}
+
+const usd = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 4,
+})
+
+export function AvgCostPerContactChart({
+  fromTimestamp,
+  toTimestamp,
+  environment,
+  traceName = 'sales-agent-turn',
+}: Props) {
+  const { data, loading, error } = useAvgCostPerContact({
+    fromTimestamp,
+    toTimestamp,
+    environment,
+    traceName,
+  })
+
+  if (loading) return <p className="text-muted-foreground text-sm">Loading…</p>
+  if (error) return <p className="text-destructive text-sm">Error: {error}</p>
+  if (!data || data.length === 0) return <p className="text-muted-foreground text-sm">No data.</p>
+
+  return (
+    <div>
+      <p className="text-muted-foreground text-xs mb-2">
+        env={environment} · trace={traceName} · {data.length} businesses
+      </p>
+      <ResponsiveContainer width="100%" height={Math.max(120, data.length * 48 + 40)}>
+        <BarChart data={data} layout="vertical" margin={{ top: 8, right: 24, bottom: 8, left: 24 }}>
+          <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+          <XAxis type="number" tickFormatter={(v: number) => usd.format(v)} />
+          <YAxis type="category" dataKey="businessId" width={100} />
+          <Tooltip
+            formatter={(value, _name, item) => {
+              const row = item.payload as { totalCost: number; contacts: number }
+              return [
+                `${usd.format(Number(value))} (${usd.format(row.totalCost)} / ${row.contacts} contacts)`,
+                'Avg per contact',
+              ]
+            }}
+            labelFormatter={(label) => `Business ${label}`}
+          />
+          <Bar dataKey="avgCostPerContact" fill="var(--color-chart-3)" radius={[0, 4, 4, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  )
+}
