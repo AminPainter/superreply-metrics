@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FiltersBar } from '@/features/unique-contacts/components/FiltersBar'
+import { FiltersBar } from '@/features/_legacy-langfuse/components/FiltersBar'
 import type { DateTimeRange } from '@/features/unique-contacts/components/DateTimeRangePicker'
-import type { Environment } from '@/features/unique-contacts/components/EnvironmentSelect'
+import type { Environment } from '@/features/_legacy-langfuse/components/EnvironmentSelect'
 import { AvgCostPerContactChart } from './AvgCostPerContactChart'
 
 function defaultRange(): DateTimeRange {

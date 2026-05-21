@@ -1,4 +1,4 @@
-import type { LangfuseTrace } from '@/features/unique-contacts/types'
+import type { LangfuseTrace } from '@/features/_legacy-langfuse/types'
 import type { AvgTracesPerSession } from '../types'
 
 export function aggregateAvgTracesPerSession(traces: LangfuseTrace[]): AvgTracesPerSession[] {

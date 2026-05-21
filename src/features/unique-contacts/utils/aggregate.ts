@@ -1,15 +1,19 @@
-import type { ContactsByBusiness, LangfuseTrace } from '../types'
+import type { ConsumptionRow, ContactsByBusiness } from '../types'
 
-export function aggregateUniqueContacts(traces: LangfuseTrace[]): ContactsByBusiness[] {
-  const sessionsByUser = new Map<string, Set<string>>()
+export function aggregateUniqueContacts(rows: ConsumptionRow[]): ContactsByBusiness[] {
+  const contactsByBusiness = new Map<number, Set<number>>()
 
-  for (const t of traces) {
-    if (!t.userId || !t.sessionId) continue
-    if (!sessionsByUser.has(t.userId)) sessionsByUser.set(t.userId, new Set())
-    sessionsByUser.get(t.userId)!.add(t.sessionId)
+  for (const r of rows) {
+    if (!contactsByBusiness.has(r.business_id)) {
+      contactsByBusiness.set(r.business_id, new Set())
+    }
+    contactsByBusiness.get(r.business_id)!.add(r.contact_id)
   }
 
-  return Array.from(sessionsByUser.entries())
-    .map(([businessId, sessions]) => ({ businessId, uniqueContacts: sessions.size }))
+  return Array.from(contactsByBusiness.entries())
+    .map(([businessId, contacts]) => ({
+      businessId: String(businessId),
+      uniqueContacts: contacts.size,
+    }))
     .sort((a, b) => b.uniqueContacts - a.uniqueContacts)
 }

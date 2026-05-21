@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { fetchAllTraces } from '@/features/unique-contacts/api/fetchTraces'
+import { fetchAllTraces } from '@/features/_legacy-langfuse/api/fetchTraces'
 import { aggregateAvgTracesPerSession } from '../utils/aggregate'
 import type { AvgTracesPerSession } from '../types'
 

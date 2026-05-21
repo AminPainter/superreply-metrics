@@ -1,6 +1,6 @@
 import { useQueries } from '@tanstack/react-query'
-import { fetchAllTraces } from '@/features/unique-contacts/api/fetchTraces'
-import { aggregateUniqueContacts } from '@/features/unique-contacts/utils/aggregate'
+import { fetchAllTraces } from '@/features/_legacy-langfuse/api/fetchTraces'
+import { aggregateUniqueContacts } from '@/features/_legacy-langfuse/utils/aggregate'
 import { fetchCostByBusiness } from '@/features/cost-by-business/api/fetchCostByBusiness'
 import type { AvgCostPerContact } from '../types'
 

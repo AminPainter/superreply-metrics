@@ -4,21 +4,12 @@ import { useUniqueContacts } from '../hooks/useUniqueContacts'
 interface Props {
   fromTimestamp: string
   toTimestamp: string
-  environment: string
-  traceName?: string
 }
 
-export function UniqueContactsChart({
-  fromTimestamp,
-  toTimestamp,
-  environment,
-  traceName = 'sales-agent-turn',
-}: Props) {
-  const { data, loading, error, totalTraces } = useUniqueContacts({
+export function UniqueContactsChart({ fromTimestamp, toTimestamp }: Props) {
+  const { data, loading, error, totalRows } = useUniqueContacts({
     fromTimestamp,
     toTimestamp,
-    environment,
-    traceName,
   })
 
   if (loading) return <p className="text-muted-foreground text-sm">Loading…</p>
@@ -28,7 +19,7 @@ export function UniqueContactsChart({
   return (
     <div>
       <p className="text-muted-foreground text-xs mb-2">
-        env={environment} · trace={traceName} · {totalTraces} traces · {data.length} businesses
+        {totalRows} rows · {data.length} businesses
       </p>
       <ResponsiveContainer width="100%" height={Math.max(120, data.length * 48 + 40)}>
         <BarChart data={data} layout="vertical" margin={{ top: 8, right: 24, bottom: 8, left: 24 }}>

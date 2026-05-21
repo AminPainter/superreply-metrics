@@ -3,7 +3,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { FiltersBar } from './FiltersBar'
 import { UniqueContactsChart } from './UniqueContactsChart'
 import type { DateTimeRange } from './DateTimeRangePicker'
-import type { Environment } from './EnvironmentSelect'
 
 function defaultRange(): DateTimeRange {
   const now = new Date()
@@ -13,27 +12,20 @@ function defaultRange(): DateTimeRange {
 
 export function UniqueContactsView() {
   const [range, setRange] = useState<DateTimeRange>(defaultRange)
-  const [environment, setEnvironment] = useState<Environment>('staging')
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Unique Contacts Per Business</CardTitle>
         <CardDescription>
-          Distinct sessionIds per userId from <code>sales-agent-turn</code> traces. 1 sessionId = 1 contact.
+          Distinct <code>contact_id</code> per <code>business_id</code> in <code>open_ai_consumption</code>.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <FiltersBar
-          range={range}
-          onRangeChange={setRange}
-          environment={environment}
-          onEnvironmentChange={setEnvironment}
-        />
+        <FiltersBar range={range} onRangeChange={setRange} />
         <UniqueContactsChart
           fromTimestamp={range.from.toISOString()}
           toTimestamp={range.to.toISOString()}
-          environment={environment}
         />
       </CardContent>
     </Card>
