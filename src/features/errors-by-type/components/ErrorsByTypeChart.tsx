@@ -4,16 +4,14 @@ import { useErrorsByType } from '../hooks/useErrorsByType'
 interface Props {
   fromTimestamp: string
   toTimestamp: string
-  environment: string
 }
 
 const numberFmt = new Intl.NumberFormat('en-US')
 
-export function ErrorsByTypeChart({ fromTimestamp, toTimestamp, environment }: Props) {
+export function ErrorsByTypeChart({ fromTimestamp, toTimestamp }: Props) {
   const { data, loading, error } = useErrorsByType({
     fromTimestamp,
     toTimestamp,
-    environment,
   })
 
   if (loading) return <p className="text-muted-foreground text-sm">Loading…</p>
@@ -26,8 +24,8 @@ export function ErrorsByTypeChart({ fromTimestamp, toTimestamp, environment }: P
   return (
     <div>
       <p className="text-muted-foreground text-xs mb-2">
-        env={environment} · {data.length} error types · {numberFmt.format(total)} total · top:{' '}
-        {top.errorType} ({numberFmt.format(top.count)})
+        {data.length} error types · {numberFmt.format(total)} total · top: {top.errorType} (
+        {numberFmt.format(top.count)})
       </p>
       <ResponsiveContainer width="100%" height={Math.max(120, data.length * 48 + 40)}>
         <BarChart data={data} layout="vertical" margin={{ top: 8, right: 24, bottom: 8, left: 24 }}>

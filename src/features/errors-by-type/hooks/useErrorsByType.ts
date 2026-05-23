@@ -4,8 +4,7 @@ import type { ErrorsByType } from '../types'
 
 interface UseErrorsByTypeOptions {
   fromTimestamp: string
-  toTimestamp: string
-  environment?: string
+  toTimestamp?: string
 }
 
 interface UseErrorsByTypeResult {
@@ -17,12 +16,11 @@ interface UseErrorsByTypeResult {
 export function useErrorsByType({
   fromTimestamp,
   toTimestamp,
-  environment,
 }: UseErrorsByTypeOptions): UseErrorsByTypeResult {
   const query = useQuery({
-    queryKey: ['errors-by-type', { fromTimestamp, toTimestamp, environment }],
+    queryKey: ['errors-by-type', { fromTimestamp, toTimestamp }],
     queryFn: ({ signal }) =>
-      fetchErrorsByType({ fromTimestamp, toTimestamp, environment, signal }),
+      fetchErrorsByType({ fromTimestamp, toTimestamp, signal }),
   })
 
   return {

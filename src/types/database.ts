@@ -2409,6 +2409,16 @@ export type Database = {
           total_cost: number
         }[]
       }
+      errors_by_type: {
+        Args: {
+          from_ts: string
+          to_ts?: string
+        }
+        Returns: {
+          error_type: string
+          count: number
+        }[]
+      }
       create_account: {
         Args: {
           p_company_name: string
