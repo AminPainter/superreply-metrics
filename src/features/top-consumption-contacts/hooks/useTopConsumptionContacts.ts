@@ -4,9 +4,7 @@ import type { TopConsumptionContact } from '../types'
 
 interface UseTopConsumptionContactsOptions {
   fromTimestamp: string
-  toTimestamp: string
-  environment?: string
-  traceName?: string
+  toTimestamp?: string
 }
 
 interface UseTopConsumptionContactsResult {
@@ -18,13 +16,11 @@ interface UseTopConsumptionContactsResult {
 export function useTopConsumptionContacts({
   fromTimestamp,
   toTimestamp,
-  environment,
-  traceName,
 }: UseTopConsumptionContactsOptions): UseTopConsumptionContactsResult {
   const query = useQuery({
-    queryKey: ['top-consumption-contacts', { fromTimestamp, toTimestamp, environment, traceName }],
+    queryKey: ['top-consumption-contacts', { fromTimestamp, toTimestamp }],
     queryFn: ({ signal }) =>
-      fetchTopConsumptionContacts({ fromTimestamp, toTimestamp, environment, traceName, signal }),
+      fetchTopConsumptionContacts({ fromTimestamp, toTimestamp, signal }),
   })
 
   return {

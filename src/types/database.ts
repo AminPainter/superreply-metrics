@@ -2517,6 +2517,16 @@ export type Database = {
         }[]
       }
       rotate_subscription_monthly_buckets: { Args: never; Returns: undefined }
+      top_consumption_contacts: {
+        Args: {
+          from_ts: string
+          to_ts?: string
+        }
+        Returns: {
+          contact_id: number
+          total_cost: number
+        }[]
+      }
       unique_contacts_by_business: {
         Args: {
           from_ts: string

@@ -1,43 +1,27 @@
-import type { MetricsResponse, TopConsumptionContact } from '../types'
+import { supabase } from '@/lib/supabase'
+import type { TopConsumptionContact } from '../types'
 
 interface FetchOptions {
   fromTimestamp: string
-  toTimestamp: string
-  environment?: string
-  traceName?: string
+  toTimestamp?: string
   signal?: AbortSignal
 }
 
 export async function fetchTopConsumptionContacts(
   opts: FetchOptions,
 ): Promise<TopConsumptionContact[]> {
-  const filters: Array<Record<string, unknown>> = []
-  if (opts.traceName) {
-    filters.push({ column: 'name', operator: '=', value: opts.traceName, type: 'string' })
-  }
-  if (opts.environment) {
-    filters.push({ column: 'environment', operator: '=', value: opts.environment, type: 'string' })
-  }
+  let q = supabase.rpc('top_consumption_contacts', {
+    from_ts: opts.fromTimestamp,
+    to_ts: opts.toTimestamp,
+  })
 
-  const query = {
-    view: 'traces',
-    metrics: [{ measure: 'totalCost', aggregation: 'sum' }],
-    dimensions: [{ field: 'sessionId' }],
-    filters,
-    fromTimestamp: opts.fromTimestamp,
-    toTimestamp: opts.toTimestamp,
-    orderBy: [{ field: 'sum_totalCost', direction: 'desc' }],
-  }
+  if (opts.signal) q = q.abortSignal(opts.signal)
 
-  const params = new URLSearchParams({ query: JSON.stringify(query) })
-  const res = await fetch(`/api/langfuse/public/metrics?${params}`, { signal: opts.signal })
-  if (!res.ok) {
-    throw new Error(`Langfuse ${res.status}: ${await res.text()}`)
-  }
-  const body = (await res.json()) as MetricsResponse
+  const { data, error } = await q
+  if (error) throw new Error(error.message)
 
-  return body.data
-    .filter((row) => row.sessionId && row.sum_totalCost != null && row.sum_totalCost > 0)
-    .map((row) => ({ sessionId: row.sessionId!, totalCost: row.sum_totalCost! }))
-    .sort((a, b) => b.totalCost - a.totalCost)
+  return (data ?? []).map((r) => ({
+    contactId: String(r.contact_id),
+    totalCost: Number(r.total_cost),
+  }))
 }
