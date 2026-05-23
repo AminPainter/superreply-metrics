@@ -1,14 +1,11 @@
 import { useQueries } from '@tanstack/react-query'
-import { fetchAllTraces } from '@/features/_legacy-langfuse/api/fetchTraces'
-import { aggregateUniqueContacts } from '@/features/_legacy-langfuse/utils/aggregate'
 import { fetchCostByBusiness } from '@/features/cost-by-business/api/fetchCostByBusiness'
+import { fetchUniqueContactsByBusiness } from '@/features/unique-contacts/api/fetchConsumption'
 import type { AvgCostPerContact } from '../types'
 
 interface UseAvgCostPerContactOptions {
   fromTimestamp: string
-  toTimestamp: string
-  environment?: string
-  traceName?: string
+  toTimestamp?: string
 }
 
 interface UseAvgCostPerContactResult {
@@ -20,28 +17,18 @@ interface UseAvgCostPerContactResult {
 export function useAvgCostPerContact({
   fromTimestamp,
   toTimestamp,
-  environment,
-  traceName,
 }: UseAvgCostPerContactOptions): UseAvgCostPerContactResult {
-  const filters = { fromTimestamp, toTimestamp, environment, traceName }
+  const filters = { fromTimestamp, toTimestamp }
 
   const results = useQueries({
     queries: [
       {
         queryKey: ['unique-contacts', filters],
-        queryFn: async ({ signal }: { signal: AbortSignal }) => {
-          const traces = await fetchAllTraces({
-            fromTimestamp,
-            toTimestamp,
-            environment,
-            name: traceName,
-            signal,
-          })
-          return { rows: aggregateUniqueContacts(traces), totalTraces: traces.length }
-        },
+        queryFn: ({ signal }: { signal: AbortSignal }) =>
+          fetchUniqueContactsByBusiness({ fromTimestamp, toTimestamp, signal }),
       },
       {
-        queryKey: ['cost-by-business', { fromTimestamp, toTimestamp }],
+        queryKey: ['cost-by-business', filters],
         queryFn: ({ signal }: { signal: AbortSignal }) =>
           fetchCostByBusiness({ fromTimestamp, toTimestamp, signal }),
       },
@@ -59,7 +46,7 @@ export function useAvgCostPerContact({
 
   const costByBusiness = new Map(costQuery.data.map((row) => [row.businessId, row.totalCost]))
 
-  const data: AvgCostPerContact[] = contactsQuery.data.rows
+  const data: AvgCostPerContact[] = contactsQuery.data
     .map((row) => {
       const totalCost = costByBusiness.get(row.businessId) ?? 0
       return {
