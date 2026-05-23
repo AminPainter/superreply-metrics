@@ -4,8 +4,6 @@ import { useCostByBusiness } from '../hooks/useCostByBusiness'
 interface Props {
   fromTimestamp: string
   toTimestamp: string
-  environment: string
-  traceName?: string
 }
 
 const usd = new Intl.NumberFormat('en-US', {
@@ -15,17 +13,10 @@ const usd = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 4,
 })
 
-export function CostByBusinessChart({
-  fromTimestamp,
-  toTimestamp,
-  environment,
-  traceName = 'sales-agent-turn',
-}: Props) {
+export function CostByBusinessChart({ fromTimestamp, toTimestamp }: Props) {
   const { data, loading, error } = useCostByBusiness({
     fromTimestamp,
     toTimestamp,
-    environment,
-    traceName,
   })
 
   if (loading) return <p className="text-muted-foreground text-sm">Loading…</p>
@@ -37,7 +28,7 @@ export function CostByBusinessChart({
   return (
     <div>
       <p className="text-muted-foreground text-xs mb-2">
-        env={environment} · trace={traceName} · {data.length} businesses · total {usd.format(totalCost)}
+        {data.length} businesses · total {usd.format(totalCost)}
       </p>
       <ResponsiveContainer width="100%" height={Math.max(120, data.length * 48 + 40)}>
         <BarChart data={data} layout="vertical" margin={{ top: 8, right: 24, bottom: 8, left: 24 }}>

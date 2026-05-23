@@ -1,40 +1,25 @@
-import type { CostByBusiness, MetricsResponse } from '../types'
+import { supabase } from '@/lib/supabase'
+import type { CostByBusiness } from '../types'
 
 interface FetchOptions {
   fromTimestamp: string
-  toTimestamp: string
-  environment?: string
-  traceName?: string
+  toTimestamp?: string
   signal?: AbortSignal
 }
 
 export async function fetchCostByBusiness(opts: FetchOptions): Promise<CostByBusiness[]> {
-  const filters: Array<Record<string, unknown>> = []
-  if (opts.traceName) {
-    filters.push({ column: 'name', operator: '=', value: opts.traceName, type: 'string' })
-  }
-  if (opts.environment) {
-    filters.push({ column: 'environment', operator: '=', value: opts.environment, type: 'string' })
-  }
+  let q = supabase.rpc('cost_by_business', {
+    from_ts: opts.fromTimestamp,
+    to_ts: opts.toTimestamp,
+  })
 
-  const query = {
-    view: 'traces',
-    metrics: [{ measure: 'totalCost', aggregation: 'sum' }],
-    dimensions: [{ field: 'userId' }],
-    filters,
-    fromTimestamp: opts.fromTimestamp,
-    toTimestamp: opts.toTimestamp,
-  }
+  if (opts.signal) q = q.abortSignal(opts.signal)
 
-  const params = new URLSearchParams({ query: JSON.stringify(query) })
-  const res = await fetch(`/api/langfuse/public/metrics?${params}`, { signal: opts.signal })
-  if (!res.ok) {
-    throw new Error(`Langfuse ${res.status}: ${await res.text()}`)
-  }
-  const body = (await res.json()) as MetricsResponse
+  const { data, error } = await q
+  if (error) throw new Error(error.message)
 
-  return body.data
-    .filter((row) => row.userId && row.sum_totalCost != null && row.sum_totalCost > 0)
-    .map((row) => ({ businessId: row.userId!, totalCost: row.sum_totalCost! }))
-    .sort((a, b) => b.totalCost - a.totalCost)
+  return (data ?? []).map((r) => ({
+    businessId: String(r.business_id),
+    totalCost: Number(r.total_cost),
+  }))
 }

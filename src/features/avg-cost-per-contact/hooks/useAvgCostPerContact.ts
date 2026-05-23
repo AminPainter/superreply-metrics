@@ -41,9 +41,9 @@ export function useAvgCostPerContact({
         },
       },
       {
-        queryKey: ['cost-by-business', filters],
+        queryKey: ['cost-by-business', { fromTimestamp, toTimestamp }],
         queryFn: ({ signal }: { signal: AbortSignal }) =>
-          fetchCostByBusiness({ fromTimestamp, toTimestamp, environment, traceName, signal }),
+          fetchCostByBusiness({ fromTimestamp, toTimestamp, signal }),
       },
     ],
   })

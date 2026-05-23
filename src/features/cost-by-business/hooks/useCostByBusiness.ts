@@ -4,9 +4,7 @@ import type { CostByBusiness } from '../types'
 
 interface UseCostByBusinessOptions {
   fromTimestamp: string
-  toTimestamp: string
-  environment?: string
-  traceName?: string
+  toTimestamp?: string
 }
 
 interface UseCostByBusinessResult {
@@ -18,13 +16,11 @@ interface UseCostByBusinessResult {
 export function useCostByBusiness({
   fromTimestamp,
   toTimestamp,
-  environment,
-  traceName,
 }: UseCostByBusinessOptions): UseCostByBusinessResult {
   const query = useQuery({
-    queryKey: ['cost-by-business', { fromTimestamp, toTimestamp, environment, traceName }],
+    queryKey: ['cost-by-business', { fromTimestamp, toTimestamp }],
     queryFn: ({ signal }) =>
-      fetchCostByBusiness({ fromTimestamp, toTimestamp, environment, traceName, signal }),
+      fetchCostByBusiness({ fromTimestamp, toTimestamp, signal }),
   })
 
   return {

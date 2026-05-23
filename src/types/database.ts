@@ -2377,6 +2377,16 @@ export type Database = {
         }
         Returns: Json
       }
+      cost_by_business: {
+        Args: {
+          from_ts: string
+          to_ts?: string
+        }
+        Returns: {
+          business_id: number
+          total_cost: number
+        }[]
+      }
       create_account: {
         Args: {
           p_company_name: string
