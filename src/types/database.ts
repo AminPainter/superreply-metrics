@@ -2379,6 +2379,18 @@ export type Database = {
           avg_trace_cost: number
         }[]
       }
+      avg_traces_per_session_by_business: {
+        Args: {
+          from_ts: string
+          to_ts?: string
+        }
+        Returns: {
+          business_id: number
+          avg_traces_per_session: number
+          traces: number
+          sessions: number
+        }[]
+      }
       check_or_create_order: {
         Args: {
           param_contact_id: number

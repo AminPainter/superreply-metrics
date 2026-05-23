@@ -1,13 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
-import { fetchAllTraces } from '@/features/_legacy-langfuse/api/fetchTraces'
-import { aggregateAvgTracesPerSession } from '../utils/aggregate'
+import { fetchAvgTracesPerSession } from '../api/fetchAvgTracesPerSession'
 import type { AvgTracesPerSession } from '../types'
 
 interface UseAvgTracesPerSessionOptions {
   fromTimestamp: string
   toTimestamp?: string
-  environment?: string
-  traceName?: string
 }
 
 interface UseAvgTracesPerSessionResult {
@@ -19,21 +16,11 @@ interface UseAvgTracesPerSessionResult {
 export function useAvgTracesPerSession({
   fromTimestamp,
   toTimestamp,
-  environment,
-  traceName,
 }: UseAvgTracesPerSessionOptions): UseAvgTracesPerSessionResult {
   const query = useQuery({
-    queryKey: ['avg-traces-per-session', { fromTimestamp, toTimestamp, environment, traceName }],
-    queryFn: async ({ signal }) => {
-      const traces = await fetchAllTraces({
-        fromTimestamp,
-        toTimestamp,
-        environment,
-        name: traceName,
-        signal,
-      })
-      return aggregateAvgTracesPerSession(traces)
-    },
+    queryKey: ['avg-traces-per-session', { fromTimestamp, toTimestamp }],
+    queryFn: ({ signal }) =>
+      fetchAvgTracesPerSession({ fromTimestamp, toTimestamp, signal }),
   })
 
   return {

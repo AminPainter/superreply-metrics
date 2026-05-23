@@ -4,23 +4,14 @@ import { useAvgTracesPerSession } from '../hooks/useAvgTracesPerSession'
 interface Props {
   fromTimestamp: string
   toTimestamp: string
-  environment: string
-  traceName?: string
 }
 
 const numberFmt = new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 })
 
-export function AvgTracesPerSessionChart({
-  fromTimestamp,
-  toTimestamp,
-  environment,
-  traceName = 'sales-agent-turn',
-}: Props) {
+export function AvgTracesPerSessionChart({ fromTimestamp, toTimestamp }: Props) {
   const { data, loading, error } = useAvgTracesPerSession({
     fromTimestamp,
     toTimestamp,
-    environment,
-    traceName,
   })
 
   if (loading) return <p className="text-muted-foreground text-sm">Loading…</p>
@@ -29,9 +20,7 @@ export function AvgTracesPerSessionChart({
 
   return (
     <div>
-      <p className="text-muted-foreground text-xs mb-2">
-        env={environment} · trace={traceName} · {data.length} businesses
-      </p>
+      <p className="text-muted-foreground text-xs mb-2">{data.length} businesses</p>
       <ResponsiveContainer width="100%" height={Math.max(120, data.length * 48 + 40)}>
         <BarChart data={data} layout="vertical" margin={{ top: 8, right: 24, bottom: 8, left: 24 }}>
           <CartesianGrid strokeDasharray="3 3" horizontal={false} />

@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FiltersBar } from '@/features/_legacy-langfuse/components/FiltersBar'
+import { FiltersBar } from '@/features/unique-contacts/components/FiltersBar'
 import type { DateTimeRange } from '@/features/unique-contacts/components/DateTimeRangePicker'
-import type { Environment } from '@/features/_legacy-langfuse/components/EnvironmentSelect'
 import { AvgTracesPerSessionChart } from './AvgTracesPerSessionChart'
 
 function defaultRange(): DateTimeRange {
@@ -13,28 +12,22 @@ function defaultRange(): DateTimeRange {
 
 export function AvgTracesPerSessionView() {
   const [range, setRange] = useState<DateTimeRange>(defaultRange)
-  const [environment, setEnvironment] = useState<Environment>('staging')
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Average Traces per Session</CardTitle>
         <CardDescription>
-          Trace count ÷ distinct sessions, per business. Higher = longer conversations from{' '}
-          <code>sales-agent-turn</code>.
+          Distinct <code>trace_id</code> ÷ distinct <code>contact_id</code>, per{' '}
+          <code>business_id</code> in <code>open_ai_consumption</code>. Higher = longer
+          conversations.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <FiltersBar
-          range={range}
-          onRangeChange={setRange}
-          environment={environment}
-          onEnvironmentChange={setEnvironment}
-        />
+        <FiltersBar range={range} onRangeChange={setRange} />
         <AvgTracesPerSessionChart
           fromTimestamp={range.from.toISOString()}
           toTimestamp={range.to.toISOString()}
-          environment={environment}
         />
       </CardContent>
     </Card>
