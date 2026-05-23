@@ -2485,6 +2485,16 @@ export type Database = {
         }[]
       }
       rotate_subscription_monthly_buckets: { Args: never; Returns: undefined }
+      unique_contacts_by_business: {
+        Args: {
+          from_ts: string
+          to_ts?: string
+        }
+        Returns: {
+          business_id: number
+          unique_contacts: number
+        }[]
+      }
       update_trial_status: {
         Args: never
         Returns: {

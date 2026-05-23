@@ -7,7 +7,7 @@ interface Props {
 }
 
 export function UniqueContactsChart({ fromTimestamp, toTimestamp }: Props) {
-  const { data, loading, error, totalRows } = useUniqueContacts({
+  const { data, loading, error } = useUniqueContacts({
     fromTimestamp,
     toTimestamp,
   })
@@ -18,9 +18,7 @@ export function UniqueContactsChart({ fromTimestamp, toTimestamp }: Props) {
 
   return (
     <div>
-      <p className="text-muted-foreground text-xs mb-2">
-        {totalRows} rows · {data.length} businesses
-      </p>
+      <p className="text-muted-foreground text-xs mb-2">{data.length} businesses</p>
       <ResponsiveContainer width="100%" height={Math.max(120, data.length * 48 + 40)}>
         <BarChart data={data} layout="vertical" margin={{ top: 8, right: 24, bottom: 8, left: 24 }}>
           <CartesianGrid strokeDasharray="3 3" horizontal={false} />
