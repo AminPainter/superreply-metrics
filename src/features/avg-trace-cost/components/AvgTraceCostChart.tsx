@@ -4,8 +4,6 @@ import { useAvgTraceCost } from '../hooks/useAvgTraceCost'
 interface Props {
   fromTimestamp: string
   toTimestamp: string
-  environment: string
-  traceName?: string
 }
 
 const usd = new Intl.NumberFormat('en-US', {
@@ -15,17 +13,10 @@ const usd = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 6,
 })
 
-export function AvgTraceCostChart({
-  fromTimestamp,
-  toTimestamp,
-  environment,
-  traceName = 'sales-agent-turn',
-}: Props) {
+export function AvgTraceCostChart({ fromTimestamp, toTimestamp }: Props) {
   const { data, loading, error } = useAvgTraceCost({
     fromTimestamp,
     toTimestamp,
-    environment,
-    traceName,
   })
 
   if (loading) return <p className="text-muted-foreground text-sm">Loading…</p>
@@ -37,8 +28,8 @@ export function AvgTraceCostChart({
   return (
     <div>
       <p className="text-muted-foreground text-xs mb-2">
-        env={environment} · trace={traceName} · {data.length} businesses · most expensive: business{' '}
-        {mostExpensive.businessId} ({usd.format(mostExpensive.avgTraceCost)}/trace)
+        {data.length} businesses · most expensive: business {mostExpensive.businessId} (
+        {usd.format(mostExpensive.avgTraceCost)}/trace)
       </p>
       <ResponsiveContainer width="100%" height={Math.max(120, data.length * 48 + 40)}>
         <BarChart data={data} layout="vertical" margin={{ top: 8, right: 24, bottom: 8, left: 24 }}>

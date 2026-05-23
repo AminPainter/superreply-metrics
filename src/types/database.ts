@@ -2369,6 +2369,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      avg_trace_cost_by_business: {
+        Args: {
+          from_ts: string
+          to_ts?: string
+        }
+        Returns: {
+          business_id: number
+          avg_trace_cost: number
+        }[]
+      }
       check_or_create_order: {
         Args: {
           param_contact_id: number

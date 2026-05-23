@@ -4,9 +4,7 @@ import type { AvgTraceCost } from '../types'
 
 interface UseAvgTraceCostOptions {
   fromTimestamp: string
-  toTimestamp: string
-  environment?: string
-  traceName?: string
+  toTimestamp?: string
 }
 
 interface UseAvgTraceCostResult {
@@ -18,13 +16,11 @@ interface UseAvgTraceCostResult {
 export function useAvgTraceCost({
   fromTimestamp,
   toTimestamp,
-  environment,
-  traceName,
 }: UseAvgTraceCostOptions): UseAvgTraceCostResult {
   const query = useQuery({
-    queryKey: ['avg-trace-cost', { fromTimestamp, toTimestamp, environment, traceName }],
+    queryKey: ['avg-trace-cost', { fromTimestamp, toTimestamp }],
     queryFn: ({ signal }) =>
-      fetchAvgTraceCost({ fromTimestamp, toTimestamp, environment, traceName, signal }),
+      fetchAvgTraceCost({ fromTimestamp, toTimestamp, signal }),
   })
 
   return {
