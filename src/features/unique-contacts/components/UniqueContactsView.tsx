@@ -1,17 +1,9 @@
-import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FiltersBar } from './FiltersBar'
+import { useDateRange } from '@/features/global-filters'
 import { UniqueContactsChart } from './UniqueContactsChart'
-import type { DateTimeRange } from './DateTimeRangePicker'
-
-function defaultRange(): DateTimeRange {
-  const now = new Date()
-  const from = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
-  return { from, to: now }
-}
 
 export function UniqueContactsView() {
-  const [range, setRange] = useState<DateTimeRange>(defaultRange)
+  const { fromTimestamp, toTimestamp } = useDateRange()
 
   return (
     <Card>
@@ -22,10 +14,9 @@ export function UniqueContactsView() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <FiltersBar range={range} onRangeChange={setRange} />
         <UniqueContactsChart
-          fromTimestamp={range.from.toISOString()}
-          toTimestamp={range.to.toISOString()}
+          fromTimestamp={fromTimestamp}
+          toTimestamp={toTimestamp}
         />
       </CardContent>
     </Card>
